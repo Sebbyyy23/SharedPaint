@@ -34,7 +34,7 @@
                                 <Slider fx:id="radiusSlider" blockIncrement="5.0" showTickLabels="true" showTickMarks="true" value="5.0" HBox.hgrow="ALWAYS"/>
                             </children>
                         </HBox>
-                        <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="514.0" prefWidth="514.0" style="-fx-background-color: white; -fx-border-color: black;">
+                        <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" onMouseDragEntered="#onMouseDragged" prefHeight="514.0" prefWidth="514.0" style="-fx-background-color: white; -fx-border-color: black;">
                             <children>
                                 <Canvas fx:id="canvas" height="512.0" layoutX="1.0" layoutY="1.0" width="512.0"/>
                             </children>

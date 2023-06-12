@@ -9,6 +9,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -26,7 +27,6 @@ public class HelloController {
         GraphicsContext graphicsContext =  canvas.getGraphicsContext2D();
         graphicsContext.setFill(color);
         graphicsContext.fillOval(x-radius,y-radius,radius*2,radius*2);
-
     }
 
     public void onStartServerClicked(ActionEvent actionEvent) {
@@ -57,4 +57,19 @@ public class HelloController {
 
         serverThread.send(String.format("%f;%f;%f;%x",x,y,radius,color.hashCode()));//x;y;radius;color
     }
+
+
+    public void onMouseDragged(MouseEvent mouseEvent) {
+        if (mouseEvent.isPrimaryButtonDown()) {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+            double radius = radiusSlider.getValue();
+            Color color = colorPicker.getValue();
+            draw(x, y, radius, color);
+
+            serverThread.send(String.format("%f;%f;%f;%x", x, y, radius, color.hashCode()));
+        }
+    }
+
+
 }

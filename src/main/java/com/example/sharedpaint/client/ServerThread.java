@@ -1,10 +1,12 @@
 package com.example.sharedpaint.client;
 
 import com.example.sharedpaint.HelloController;
+import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Path;
+import java.util.HexFormat;
 
 public class ServerThread extends Thread {
     private Socket socket;
@@ -12,8 +14,9 @@ public class ServerThread extends Thread {
     private HelloController controller;
 
 
-    public ServerThread(String address, int port,HelloController controller) {
+    public ServerThread(String address, int port, HelloController controller) {
         try {
+            this.controller = controller;
             socket = new Socket(address, port);
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,9 +31,7 @@ public class ServerThread extends Thread {
             writer = new PrintWriter(output, true);
             String message;
             while ((message = reader.readLine()) != null) {
-                System.out.println(message);
-
-
+                drawCircle(message);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,5 +47,16 @@ public class ServerThread extends Thread {
     public void broadcast(String message) {
 
         writer.println(message);
+    }
+
+    public void drawCircle(String message) {
+        double x = 0, y = 0, radius = 0;
+        long color = 0;
+        String[] args = message.split(";");
+        x = Double.valueOf(args[0]);
+        y = Double.valueOf(args[1]);
+        radius = Double.valueOf(args[2]);
+        color = Long.parseLong(args[3], 16);
+        controller.draw(x, y, radius, Color.valueOf(Integer.toHexString((int) color)));
     }
 }
