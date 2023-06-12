@@ -1,33 +1,42 @@
 package com.example.sharedpaint.server;
 
+import com.example.sharedpaint.server.Server;
+
 import java.io.*;
 import java.net.Socket;
 
 public class ClientThread extends Thread {
-    private Socket socket;
-    public ClientThread(Socket socket) {
-        this.socket = socket;
+    public Socket getSocket() {
+        return socket;
     }
 
-    @Override
+    private Socket socket;
+    private PrintWriter writer;
+    private Server server;
+    private String clientName = null;
+
+    public ClientThread(Socket socket, Server server) {
+        this.socket = socket;
+        this.server = server;
+    }
+
     public void run() {
         try {
-            InputStream input  = socket.getInputStream();
+            InputStream input = socket.getInputStream();
             OutputStream output = socket.getOutputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            PrintWriter writer = new PrintWriter(output, true);
-
-            System.out.println("New client!");
+            writer = new PrintWriter(output, true);
             String message;
             while ((message = reader.readLine()) != null) {
                 System.out.println(message);
-                writer.println(message);
-                //writer.flush();
             }
-            System.out.println("client disconnected");
+            System.out.println("closed");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+    }
 
+    public void send(String message) {
+        writer.println(message);
     }
 }

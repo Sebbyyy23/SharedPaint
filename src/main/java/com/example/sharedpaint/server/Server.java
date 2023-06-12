@@ -2,9 +2,12 @@ package com.example.sharedpaint.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server extends Thread{
     private ServerSocket serverSocket;
+    private List<ClientThread> clients = new ArrayList<>();
 
     public Server(int port) {
         try {
@@ -16,19 +19,12 @@ public class Server extends Thread{
 
     public void run(){
         while(true){
+            Socket clientSocket;
             try {
-                Socket socket = serverSocket.accept();
-                InputStream input = socket.getInputStream();
-                OutputStream output = socket.getOutputStream();
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                String message;
-                while((message = reader.readLine()) != null) {
-                    System.out.printf(message);
-                }
-                System.out.println("closed");
-
-
+                clientSocket = serverSocket.accept();
+                ClientThread thread = new ClientThread(clientSocket, this);
+                clients.add(thread);
+                thread.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

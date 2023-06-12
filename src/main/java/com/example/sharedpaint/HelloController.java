@@ -45,7 +45,7 @@ public class HelloController{
         double radius = radiusSlider.getValue();
         Color color = colorPicker.getValue();
         draw(x, y, radius, color);
-        serverThread.send(String.format("x:%f y:%f radius:%f color:%s", x, y, radius, color.toString()));
+        serverThread.send(String.format("x:%f y:%f radius:%f color:%x", x, y, radius, color.hashCode()));
     }
 
     public void onConnectClicked(ActionEvent actionEvent) {
