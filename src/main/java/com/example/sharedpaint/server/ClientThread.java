@@ -13,30 +13,39 @@ public class ClientThread extends Thread {
     private Socket socket;
     private PrintWriter writer;
     private Server server;
-    private String clientName = null;
+
 
     public ClientThread(Socket socket, Server server) {
         this.socket = socket;
         this.server = server;
     }
 
-    public void run() {
+    public void run(){
         try {
             InputStream input = socket.getInputStream();
             OutputStream output = socket.getOutputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             writer = new PrintWriter(output, true);
             String message;
-            while ((message = reader.readLine()) != null) {
-                System.out.println(message);
+            while ((message = reader.readLine()) != null){
+
+                server.broadcast(message);
             }
-            System.out.println("closed");
-        } catch (IOException e) {
+
+            server.removeClient(this);
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void send(String message) {
+    public void send(String message){
         writer.println(message);
     }
+
+
+
+
+
+
 }
