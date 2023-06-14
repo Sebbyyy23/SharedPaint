@@ -103,12 +103,7 @@ public class Server extends Thread{
     }
 
     public void loadDatabaseOnCanvas(List<String> dots, ClientThread newClient){
-            for(String message : dots)
-                newClient.send(message);
+            for(String dot : dots)
+                newClient.send(dot);
     }
-
-
-
-
-
 }
