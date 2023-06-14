@@ -33,7 +33,6 @@ public class ClientThread extends Thread {
             String message;
             while ((message = reader.readLine()) != null){
                 server.broadcast(message);
-                server.saveDot(message);
             }
 
             server.removeClient(this);

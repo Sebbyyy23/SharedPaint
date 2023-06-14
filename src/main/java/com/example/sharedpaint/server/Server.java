@@ -1,11 +1,5 @@
 package com.example.sharedpaint.server;
-import com.example.sharedpaint.DatabaseConnection;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,12 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Server extends Thread{
     private ServerSocket serverSocket;
     private List<ClientThread> clients = new ArrayList<>();
+    private Connection connection;
+    private PreparedStatement statement;
 
     public Server(int port) {
         try {
@@ -31,8 +25,14 @@ public class Server extends Thread{
     }
 
     public void run(){
-        DatabaseConnection databaseConnection = new DatabaseConnection();
-        databaseConnection.connect("database.db");
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:database.db");
+            statement = connection.prepareStatement(
+                    "INSERT INTO dot (x, y, color, radius) VALUES (?, ?, ?, ?)");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
 
 
         while(true){
@@ -57,24 +57,20 @@ public class Server extends Thread{
     public void broadcast( String message){
         for(var currentClient : clients)
             currentClient.send(message);
-
+        saveDot(message);
     }
 
-    public void saveDot(String message) {
+    private void saveDot(String message) {
         String[] parameters = message.split(";");
         for (int i = 0; i < parameters.length; i++) {
             parameters[i] = parameters[i].replaceAll("\\..*", "");
         }
 
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:database.db");
-             PreparedStatement statement = connection.prepareStatement(
-                     "INSERT INTO dot (x, y, color, radius) VALUES (?, ?, ?, ?)")
-        ) {
+        try{
             statement.setInt(1, Integer.parseInt(parameters[0]));
             statement.setInt(2, Integer.parseInt(parameters[1]));
             statement.setString(3, parameters[3]);
             statement.setInt(4, Integer.parseInt(parameters[2]));
-
             statement.executeUpdate();
             System.out.println("Record inserted successfully.");
         } catch (SQLException e) {

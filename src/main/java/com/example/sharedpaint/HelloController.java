@@ -17,7 +17,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 public class HelloController {
 
-    DatabaseConnection databaseConnection;
     public Connection connection;
     public TextField addressField;
     public TextField portField;
