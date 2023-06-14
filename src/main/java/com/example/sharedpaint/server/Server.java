@@ -1,4 +1,6 @@
 package com.example.sharedpaint.server;
+import com.example.sharedpaint.DatabaseConnection;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,6 +9,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +31,10 @@ public class Server extends Thread{
     }
 
     public void run(){
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        databaseConnection.connect("database.db");
+
+
         while(true){
             Socket clientSocket;
             try {
@@ -50,6 +60,27 @@ public class Server extends Thread{
 
     }
 
+    public void saveDot(String message) {
+        String[] parameters = message.split(";");
+        for (int i = 0; i < parameters.length; i++) {
+            parameters[i] = parameters[i].replaceAll("\\..*", "");
+        }
+
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:database.db");
+             PreparedStatement statement = connection.prepareStatement(
+                     "INSERT INTO dot (x, y, color, radius) VALUES (?, ?, ?, ?)")
+        ) {
+            statement.setInt(1, Integer.parseInt(parameters[0]));
+            statement.setInt(2, Integer.parseInt(parameters[1]));
+            statement.setString(3, parameters[3]);
+            statement.setInt(4, Integer.parseInt(parameters[2]));
+
+            statement.executeUpdate();
+            System.out.println("Record inserted successfully.");
+        } catch (SQLException e) {
+            System.err.println("Error inserting record: " + e.getMessage());
+        }
+    }
 
 
 

@@ -17,6 +17,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 public class HelloController {
 
+    DatabaseConnection databaseConnection;
     public Connection connection;
     public TextField addressField;
     public TextField portField;
@@ -39,8 +40,7 @@ public class HelloController {
         serverThread= new ServerThread(address, port,this);
         serverThread.start();
 
-        DatabaseConnection connection = new DatabaseConnection();
-        connection.connect("database.db");
+
     }
 
     public void onConnectClicked(ActionEvent actionEvent) {
@@ -60,6 +60,7 @@ public class HelloController {
         draw(x,y,radius,color);
 
         serverThread.send(String.format("%f;%f;%f;%x",x,y,radius,color.hashCode()));//x;y;radius;color
+
     }
 
 
