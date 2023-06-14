@@ -3,10 +3,7 @@ package com.example.sharedpaint.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +24,7 @@ public class Server extends Thread{
     public void run(){
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:database.db");
-            statement = connection.prepareStatement(
-                    "INSERT INTO dot (x, y, color, radius) VALUES (?, ?, ?, ?)");
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -42,6 +38,7 @@ public class Server extends Thread{
                 ClientThread thread = new ClientThread(clientSocket, this);
                 clients.add(thread);
                 thread.start();
+                newFunction(getSavedDot(), thread);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -67,6 +64,8 @@ public class Server extends Thread{
         }
 
         try{
+            statement = connection.prepareStatement(
+                    "INSERT INTO dot (x, y, color, radius) VALUES (?, ?, ?, ?)");
             statement.setInt(1, Integer.parseInt(parameters[0]));
             statement.setInt(2, Integer.parseInt(parameters[1]));
             statement.setString(3, parameters[3]);
@@ -79,6 +78,33 @@ public class Server extends Thread{
     }
 
 
+    private List<String> getSavedDot() {
+        List<String> dotRecords = new ArrayList<>();
+
+        try {
+             statement = connection.prepareStatement("SELECT * FROM dot");
+             ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int x = resultSet.getInt("x");
+                int y = resultSet.getInt("y");
+                String color = resultSet.getString("color");
+                int radius = resultSet.getInt("radius");
+
+                String record = x + ";" + y + ";" + radius + ";" + color;
+                dotRecords.add(record);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving dot records: " + e.getMessage());
+        }
+
+        return dotRecords;
+    }
+
+    public void newFunction(List<String> dots, ClientThread newClient){
+            for(String message : dots)
+                newClient.send(message);
+    }
 
 
 
