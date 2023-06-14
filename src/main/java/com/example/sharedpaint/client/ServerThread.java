@@ -5,8 +5,6 @@ import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Path;
-import java.util.HexFormat;
 
 public class ServerThread extends Thread {
     private Socket socket;

@@ -30,7 +30,6 @@ public class Server extends Thread{
         }
 
 
-
         while(true){
             Socket clientSocket;
             try {
@@ -65,8 +64,7 @@ public class Server extends Thread{
         }
 
         try{
-            statement = connection.prepareStatement(
-                    "INSERT INTO dot (x, y, color, radius) VALUES (?, ?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO dot (x, y, color, radius) VALUES (?, ?, ?, ?)");
             statement.setInt(1, Integer.parseInt(parameters[0]));
             statement.setInt(2, Integer.parseInt(parameters[1]));
             statement.setString(3, parameters[3]);

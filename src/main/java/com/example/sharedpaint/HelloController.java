@@ -2,22 +2,16 @@ package com.example.sharedpaint;
 import com.example.sharedpaint.client.ServerThread;
 import com.example.sharedpaint.server.Server;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
 public class HelloController {
 
-    public Connection connection;
     public TextField addressField;
     public TextField portField;
     public ColorPicker colorPicker;
@@ -38,8 +32,6 @@ public class HelloController {
         server.start();
         serverThread= new ServerThread(address, port,this);
         serverThread.start();
-
-
     }
 
     public void onConnectClicked(ActionEvent actionEvent) {
@@ -47,8 +39,6 @@ public class HelloController {
         String address = "localhost";
         serverThread= new ServerThread(address, port,this);
         serverThread.start();
-
-
     }
 
     public void onMouseClicked(MouseEvent mouseEvent) {
@@ -74,6 +64,5 @@ public class HelloController {
             serverThread.send(String.format("%f;%f;%f;%x", x, y, radius, color.hashCode()));
         }
     }
-
 
 }

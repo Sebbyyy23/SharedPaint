@@ -1,13 +1,9 @@
 package com.example.sharedpaint.server;
 
-import com.example.sharedpaint.server.Server;
 
 import java.io.*;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
 
 public class ClientThread extends Thread {
     public Socket getSocket() {
@@ -45,11 +41,5 @@ public class ClientThread extends Thread {
     public void send(String message){
         writer.println(message);
     }
-
-
-
-
-
-
 
 }
