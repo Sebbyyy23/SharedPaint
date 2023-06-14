@@ -12,10 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 public class HelloController {
 
-
+    public Connection connection;
     public TextField addressField;
     public TextField portField;
     public ColorPicker colorPicker;
@@ -37,6 +39,8 @@ public class HelloController {
         serverThread= new ServerThread(address, port,this);
         serverThread.start();
 
+        DatabaseConnection connection = new DatabaseConnection();
+        connection.connect("database.db");
     }
 
     public void onConnectClicked(ActionEvent actionEvent) {
