@@ -38,7 +38,7 @@ public class Server extends Thread{
                 ClientThread thread = new ClientThread(clientSocket, this);
                 clients.add(thread);
                 thread.start();
-                newFunction(getSavedDot(), thread);
+                loadDatabaseOnCanvas(getSavedDot(), thread);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -54,6 +54,7 @@ public class Server extends Thread{
     public void broadcast( String message){
         for(var currentClient : clients)
             currentClient.send(message);
+
         saveDot(message);
     }
 
@@ -101,7 +102,7 @@ public class Server extends Thread{
         return dotRecords;
     }
 
-    public void newFunction(List<String> dots, ClientThread newClient){
+    public void loadDatabaseOnCanvas(List<String> dots, ClientThread newClient){
             for(String message : dots)
                 newClient.send(message);
     }
